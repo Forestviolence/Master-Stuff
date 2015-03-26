@@ -1,0 +1,3 @@
+added possibilities for saving images based on the image src
+can delete images by clicking on them and holding the alt key 
+can save notes

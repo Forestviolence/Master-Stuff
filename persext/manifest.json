@@ -20,7 +20,7 @@
 	
 
   "permissions": [
-	 "http://*/*", "https://*/*", "contextMenus", "tabs", "idle", "webRequest", "webRequestBlocking", "webNavigation", "activeTab", "storage"
+	 "http://*/*", "https://*/*", "contextMenus", "tabs", "idle", "webRequest", "webRequestBlocking", "webNavigation", "activeTab", "storage", "unlimitedStorage"
 
   ],
    "icons": {

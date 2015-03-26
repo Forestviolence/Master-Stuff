@@ -20,7 +20,7 @@ chrome.extension.onRequest.addListener(handleRequest);
 
 
 
-
+var altIsDown = false;
 var clickedOnce = false;
 var removeButton = false;
 var oldBGColor = null;
@@ -33,12 +33,13 @@ var addedLinks = [];
 var logToShow = [];
 
 
+var savedImages = [];
 
 window.onload = function(e){
 	
-	var domain = JSON.stringify("log" + document.domain);
+	var domain = "log" + document.domain;
 	var url = document.URL;
-	var titles = document.evaluate("//html/head/title", document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.substring(0,31);
+	var titles = document.evaluate("//html/head/title", document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.substring(0,23);
 	var object = {href: url, title: titles};
 
 	chrome.runtime.sendMessage({method:"addToDomLog", key: domain, value: JSON.stringify(object)}, function(response){
@@ -66,7 +67,8 @@ window.onload = function(e){
 	chrome.runtime.sendMessage({method: "getLocalStorage", key: "recentLog"}, function(response){
 		var titles = document.evaluate("//html/head/title", document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.substring(0,23);
 		var url = document.URL;
-		if(!response){
+		
+		if(!response || !response.data){
 			var logg = [];
 			logg.push({href: document.URL, title: titles});
 			object = JSON.stringify(logg);
@@ -75,13 +77,9 @@ window.onload = function(e){
 			});
 		}
 		else{
-			
 			var logg = JSON.parse(response.data); 
 			
 			
-			
-			
-//			
 //			var index = logg.indexOf(url);
 //			if(index < 0){
 //				logg.push(url);
@@ -116,10 +114,13 @@ window.onload = function(e){
 
 var Style = function(element){
 	if(element.nodeName == "A"){
-		element.setAttribute('style', "background: #ddd; border-style: outset; border-width: 5px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 5px 5px; margin: 10px 5px;");
-		element.addEventListener('mouseover', onMouseOverButton); 
-		element.addEventListener('mouseout', onMouseOutButton);
-		element.addEventListener('mousedown', onMouseDownButton);
+		element.setAttribute('style', "background: #ddd; border-style: outset; border-width: 5px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 5px 5px; margin: 10px 5px; overflow-x:hidden;");
+		$(element).mouseenter(onMouseOverButton);
+		$(element).mouseleave(onMouseOutButton);
+		$(element).mousedown(onMouseDownButton);
+//		element.addEventListener('mouseover', onMouseOverButton); 
+//		element.addEventListener('mouseout', onMouseOutButton);
+//		element.addEventListener('mousedown', onMouseDownButton);
 	}
 	else if(element.nodeName == "H1"){
 		element.setAttribute('style', "color: black; text-align: center; font-size: 20px; font-family: \"Arial\"; font-weight: normal; padding: 10px 10px; margin: 15px 10px;");
@@ -128,17 +129,20 @@ var Style = function(element){
 		element.setAttribute('style', "color: black; text-align: center; font-size: 30px; font-family: \"Arial\"; font-weight: normal; padding: 10px 10px; margin: 15px 10px;");
 	}
 	else if(element.nodeName == "BUTTON"){
-		element.setAttribute('style', "background: #ddd; border-style: outset; border-width: 5px; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 5px 5px; margin: 10px 5px;");
-		element.addEventListener('mouseover', onMouseOverButton); 
-		element.addEventListener('mouseout', onMouseOutButton);
-		element.addEventListener('mousedown', onMouseDownButton);
+		element.setAttribute('style', "background: #ddd; border-style: outset; border-width: 5px; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 5px 5px; margin: 10px 5px; overflow-x:hidden;");
+		$(element).mouseenter(onMouseOverButton);
+		$(element).mouseleave(onMouseOutButton);
+		$(element).mousedown(onMouseDownButton);
+//		element.addEventListener('mouseover', onMouseOverButton); 
+//		element.addEventListener('mouseout', onMouseOutButton);
+//		element.addEventListener('mousedown', onMouseDownButton);
 	}
 	else if (element.nodeName == "DIV"){
-		element.setAttribute('style', "margin: 10 20px;");
+		element.setAttribute('style', "margin: 10 20px; overflow-y:auto;");
 		//custom stuff for divs
 	}
 	else if (element.nodeName == "TEXTAREA"){
-		element.setAttribute('style', "width: 90%;");
+		element.setAttribute('style', "width: 90%; heigth: 15%; overflow-y:auto;");
 		element.setAttribute('rows', "6;");
 		
 		
@@ -146,9 +150,12 @@ var Style = function(element){
 		// add focuslisteners
 	}
 	else if (element.nodeName == "IMG"){
-		element.addEventListener('mouseover', onMouseOverImgButton); 
-		element.addEventListener('mouseout', onMouseOutImgButton);
-		element.addEventListener('mousedown', onMouseDownImgButton);
+		$(element).mouseenter(onMouseOverImgButton);
+		$(element).mouseleave(onMouseOutImgButton);
+		$(element).mousedown(onMouseDownImgButton);
+//		element.addEventListener('mouseover', onMouseOverImgButton); 
+//		element.addEventListener('mouseout', onMouseOutImgButton);
+//		element.addEventListener('mousedown', onMouseDownImgButton);
 		
 		
 	}
@@ -204,12 +211,22 @@ function toggleSidebar() {
 			background:white;\
 			box-shadow:inset 0 0 1em black;\
 			z-index:99999999999999;\
+			overflow-y:auto;\
 		";
 		
 		var scriptadd = document.createElement('script');
 		scriptadd.setAttribute("type", "text/javascript;");
 		scriptadd.setAttribute("src", "jquery-2.1.3.min.js");
 		sidebar.appendChild(scriptadd);
+		
+		
+//		fetch images list
+		
+		chrome.storage.local.get('images', function(item){
+			console.log(item);
+			savedImages = JSON.parse(item);
+		});
+		
 		
 		var header = document.createElement('h1');
 		header.innerHTML = "Header";
@@ -222,10 +239,17 @@ function toggleSidebar() {
 		Style(logoutbutton);
 		sidebar.appendChild(logoutbutton);
 		
+//		var saveImagebutton = document.createElement('button');
+//		saveImagebutton.id = "extSidebarSaveImageButton";
+//		saveImagebutton.innerHTML = "Save Image";
+//		Style(saveImagebutton);
+//		sidebar.appendChild(saveImagebutton);
+		
 		document.body.appendChild(sidebar);
 		
 		sidebarOpen = true;
 		
+//		saveImagebutton.addEventListener('click', saveImageStart);
 		logoutbutton.addEventListener('click', LogoutStart);
 		document.addEventListener('keypress', KeyDownPress);
 		
@@ -246,46 +270,103 @@ function toggleSidebar() {
 		Style(cont);
 		sidebar.appendChild(cont);
 		
+		//DOMAINLOG
 		var domcontheader = document.createElement('h1');
 		domcontheader.innerHTML = "Domain Log";
 		Style(domcontheader);
 		sidebar.appendChild(domcontheader);
+		
+		var hidedomlogbtn = document.createElement('button')
+		hidedomlogbtn.id = "extSidebarHideDomainButton";
+		hidedomlogbtn.innerHTML = "Hide";
+		Style(hidedomlogbtn);
+		domcontheader.appendChild(hidedomlogbtn);
+		$(hidedomlogbtn).click(HideDomHandler);
+		
+		
 		
 		var domcont = document.createElement('div');
 		domcont.id="extSidebarDomainLogContainer";
 		Style(domcont);
 		sidebar.appendChild(domcont);
 		
+		//RECENTLOG
+		
+		var logheader = document.createElement('h1');
+		logheader.innerHTML = "Recent Log";
+		Style(logheader);
+		sidebar.appendChild(logheader);
+		
+		var hidelogbtn = document.createElement('button')
+		hidelogbtn.id = "extSidebarHideRecentButton";
+		hidelogbtn.innerHTML = "Hide";
+		Style(hidelogbtn);
+		logheader.appendChild(hidelogbtn);
+		$(hidelogbtn).click(HideRecentHandler);
 		
 		var logcont = document.createElement('div');
 		logcont.id="extSidebarLogContainer";
 		Style(logcont);
 		sidebar.appendChild(logcont);
 		
+
+		//NOTES
 		
-		var logheader = document.createElement('h1');
-		logheader.innerHTML = "Recent Log";
-		Style(logheader);
-		logcont.appendChild(logheader);
+		var notesheader = document.createElement('h1');
+		notesheader.innerHTML = "Notes";
+		Style(notesheader);
+		sidebar.appendChild(notesheader);
+		
+		var hidenotesbtn = document.createElement('button')
+		hidenotesbtn.id = "extSidebarHideNotesButton";
+		hidenotesbtn.innerHTML = "Hide";
+		Style(hidenotesbtn);
+		notesheader.appendChild(hidenotesbtn);
+		$(hidenotesbtn).click(HideNotesHandler);
 		
 		var notescont = document.createElement('div');
 		notescont.id = "extSidebarNotesContainer";
 		Style(notescont);
 		sidebar.appendChild(notescont);
 		
-		var notesheader = document.createElement('h1');
-		notesheader.innerHTML = "Notes";
-		Style(notesheader);
-		notescont.appendChild(notesheader);
+	
 		
 		var notesarea = document.createElement('textarea');
 		notesarea.id = "extSidebarNotesArea";
 		Style(notesarea);
 		notescont.appendChild(notesarea);
 		
-		// not for this release.
-		var imagecont = document.createElement('div');
-		imagecont.id = "extSidebarImageContainer";
+		//IMAGES
+		var imageheader = document.createElement('h1');
+		imageheader.id = "extSidebarImageHeader";
+		imageheader.innerHTML = "Images";
+		Style(imageheader);
+		sidebar.appendChild(imageheader);
+		
+//		var imagecont = document.createElement('div');
+//		imagecont.id = "extSidebarImageContainer";
+//		Style(imagecont);
+//		sidebar.appendChild(imagecont);
+		
+		var togglesaveimagebtn = document.createElement('button')
+		togglesaveimagebtn.id = "extSidebarToggleSaveImageButton";
+		togglesaveimagebtn.innerHTML = "Toggle Save";
+		Style(togglesaveimagebtn);
+		imageheader.appendChild(togglesaveimagebtn);
+		$(togglesaveimagebtn).click(ToggleAltToSave);
+		
+		var hideimagesbtn = document.createElement('button')
+		hideimagesbtn.id = "extSidebarHideImagesButton";
+		hideimagesbtn.innerHTML = "Hide";
+		Style(hideimagesbtn);
+		imageheader.appendChild(hideimagesbtn);
+		$(hideimagesbtn).click(HideImagesHandler);
+		
+		
+		var imagecont2 = document.createElement('div');
+		imagecont2.id = "extSidebarImages";
+		Style(imagecont2);
+		sidebar.appendChild(imagecont2);
 		
 		
 		
@@ -298,13 +379,14 @@ function toggleSidebar() {
 			});
 		});
 		
-		eabtn.addEventListener('click', AddThisButtonStart);
+		$(eabtn).click(AddThisButtonStart);
+//		addEventListener('click', AddThisButtonStart);
 		remv.addEventListener('click', RemoveNextClickedElement);
 		
 		
 		LoadLinks();
 		var requestkey2 = "btn" + document.domain;
-		var requestkey = JSON.stringify("log" + document.domain);
+		var requestkey = "log" + document.domain;
 		
 		chrome.runtime.sendMessage({method: "getLocalStorage", key: requestkey2}, function(response){
 			
@@ -351,6 +433,8 @@ function toggleSidebar() {
 			
 		});
 		
+		LoadImages();
+		
 		console.log(document.URL);
 //		var thisthing = document.evaluate("//html/head/title", document, null, XPathResult.ANY_TYPE, null);
 //		var thisthing = document.evaluate('//html/head/title', document.href = "www.9gag.com", null, XPathResult.ANY_TYPE, null);
@@ -381,7 +465,7 @@ var AddButtonsToContainer = function(list, container){
 			Style(image);
 			image.addEventListener('click', onClickCustomButton);
 			button.appendChild(image);
-			console.log("was here");
+			//console.log("was here");
 			
 		}
 		button.setAttribute('extxpath', list[i].path);
@@ -423,6 +507,8 @@ var AddLinksToContainer = function(list, container){
 	console.log(list.length);
 	console.log("list:");
 	console.log(list);
+	var brrrr = document.createElement('br');
+	container.appendChild(brrrr);
 	for(i = list.length;i > -1;i--){
 		if(!list[i]){
 			continue;
@@ -495,9 +581,12 @@ var LoadButtons = function(){
 }
 
 var AddThisButtonStart = function(e){
-	e.srcElement.innerHTML = "Click on the button to add";
+	e.target.innerHTML = "Click on the button to add";
 	//e.srcElement.disabled = true;
-	document.addEventListener('click', AddThisButtonEnd);
+	$("*").click(AddThisButtonEnd);
+	//document.addEventListener('click', AddThisButtonEnd);
+//	$("*").mouseenter(onMouseOverAddButton);
+//	$("*").mouseleave(onMouseOutAddButton);
 	document.addEventListener('mouseover', onMouseOverAddButton); 
 	document.addEventListener('mouseout', onMouseOutAddButton);
 	clickedOnce = false;
@@ -505,41 +594,55 @@ var AddThisButtonStart = function(e){
 };
 var onMouseOverButton = function(e){
 	e.preventDefault();
-	e.toElement.style.borderStyle = "inset";
+	e.currentTarget.style.borderStyle = "inset";
 }
 var onMouseOutButton = function(e){
 	e.preventDefault();
-	e.fromElement.style.borderStyle = "outset";
-	e.fromElement.style.background = "#ddd";
+	e.currentTarget.style.borderStyle = "outset";
+	e.currentTarget.style.background = "#ddd";
 }
 var onMouseDownButton = function(e) {
+	
 	e.preventDefault();
-	e.toElement.style.background = "#f1f1f1";
+	e.currentTarget.style.background = "#f1f1f1";
 }
 var onMouseOverImgButton = function(e){
-	if(e.toElement.parentNode.nodeName == "BUTTON" ){
-		e.toElement.parentNode.style.borderStyle = "inset";
+	if(e.currentTarget.parentNode.nodeName == "BUTTON" ){
+		e.currentTarget.parentNode.style.borderStyle = "inset";
 	}
 }
 var onMouseOutImgButton = function(e){
-	if(e.toElement.parentNode.nodeName == "BUTTON" ){
-		e.fromElement.parentNode.style.borderStyle = "outset";
-		e.fromElement.parentNode.style.background = "#ddd";
+	if(e.currentTarget.parentNode.nodeName == "BUTTON" ){
+		e.currentTarget.parentNode.style.borderStyle = "outset";
+		e.currentTarget.parentNode.style.background = "#ddd";
 	}
 }
 var onMouseDownImgButton = function(e) {
-	if(e.toElement.parentNode.nodeName == "BUTTON" ){
-		e.toElement.parentNode.style.background = "#f1f1f1";
+	if(e.currentTarget.parentNode.nodeName == "BUTTON" ){
+		e.currentTarget.parentNode.style.background = "#f1f1f1";
 	}
 }
-
+//var TheOnlycounter = 0;
 var onMouseOverAddButton = function(e){
-	
-	oldBGColor = e.toElement.style.backgroundColor;
-	e.toElement.style.backgroundColor = "#FDFF47";
+//	TheOnlycounter++;
+//	console.log("enter " + TheOnlycounter);
+//	console.log(e);
+//	if(!e.toElement.hasAttribute("persextbg")){
+//		e.toElement.setAttribute("persextbg", e.toElement.style.backgroundColor);
+//		e.toElement.style.backgroundColor = "#FDFF47";
+//	}
+//	else if(e.toElement.getAttribute("persext") == e.toElement.style.backgroundColor){
+//		e.toElement.style.backgroundColor = "#FDFF47";
+//	}
+//	
 }
 var onMouseOutAddButton = function(e){
-	e.fromElement.style.backgroundColor = oldBGCol00or;
+//	TheOnlycounter++;
+//	console.log("leave " +  TheOnlycounter);
+//	console.log(e);
+//	if(!e.fromElement.hasAttribute("persextbg")){
+//		e.fromElement.style.background = e.fromElement.getAttribute("persext");
+//	}
 }
 var onMouseOverCustomButton = function(e){
 	
@@ -637,6 +740,7 @@ var RemoveElement = function(e){ b
 }
 // 		this is messy and needs more work
 var AddThisButtonEnd = function(e){
+	e.preventDefault();
 	if(clickedOnce){
 		
 		
@@ -644,22 +748,29 @@ var AddThisButtonEnd = function(e){
 		
 //		if(e.toElement.hasAttribute("onClick")
 //		elementInQuestion = e.toElement;
-		e.preventDefault();
+//		e.preventDefault();
 		
 	
+		$("*").unbind("click", AddThisButtonEnd);
+//		document.removeEventListener('click', AddThisButtonEnd);
+		$("*").unbind("mouseover", onMouseOverAddButton);
+		$("*").unbind("mouseout", onMouseOutAddButton);
 		
-		document.removeEventListener('click', AddThisButtonEnd);
-		document.removeEventListener('mouseover', onMouseOverAddButton); 
-		document.removeEventListener('mouseout', onMouseOutAddButton);
-		e.toElement.style.backgroundColor = oldBGColor;
+//		document.removeEventListener('mouseover', onMouseOverAddButton); 
+//		document.removeEventListener('mouseout', onMouseOutAddButton);
+		e.target.style.backgroundColor = oldBGColor;
 		
-		if(!SaveLink(e.toElement)){
+		if(!SaveLink(e.currentTarget)){
 //			Save a button here. find the xpath
 //			WARNING: this might change if the site changes layout
-			var XPath = getElementXPath(e.toElement);
-			var buttonText = e.toElement.innerHTML.replace(/<(?:.|\n)*?>/gm, '').substring(0,21);
-			if(e.toElement.innerText){
-				buttonText = e.toElement.innerText.substring(0,21);
+//			console.log(e);
+//			console.log(e.target);
+//			console.log($._data( $(e.currentTarget), 'events'));
+//			console.log($._data(e.target, 'events'));
+			var XPath = getElementXPath(e.target);
+			var buttonText = e.target.innerHTML.replace(/<(?:.|\n)*?>/gm, '').substring(0,21);
+			if(e.target.innerText){
+				buttonText = e.target.innerText.substring(0,21);
 			}
 			if(buttonText == "" || buttonText == " "){
 				buttonText == "TEMP ButtonText";
@@ -682,59 +793,12 @@ var AddThisButtonEnd = function(e){
 			var key = "btn" + document.domain;
 			var value = JSON.stringify(addedButtonsList);
 			
-//			
-//			
-//			console.log("look here:");
-//			
-//			console.log(value);
-//			console.log(JSON.parse(value));
-			
-			
-//			value = JSON.stringify("something else");
-//			var meta = JSON.stringify(addedButtonsMeta);
 			StoreLocal(key, value);
 			
 			
 			
 		}
-//		var buttonText = e.toElement.innerHTML.replace(/<(?:.|\n)*?>/gm, '').substring(0,21);
-//		if(e.toElement.innerText){
-//			buttonText = e.toElement.innerText.substring(0,21);
-//		}
-//
-//		addedButtonsList.push(e.toElement);
-//		
-//		var container = document.getElementById("extSidebarCustomButtonContainer");
-//		
-//		
-//		var btn = document.createElement('button');
-////		heh, no, not yet atleast
-////		btn.id = "extSidebarAddButton";
-//		btn.innerHTML = buttonText;
-//		Style(btn);
-//		container.appendChild(btn);
-//		
-//		
-//		btn.addEventListener('click', AddedButtonClickEventSimulate);
-//		btn.addEventListener('mouseover', onMouseOverCustomButton); 
-//		btn.addEventListener('mouseout', onMouseOutCustomButton);
-//		
-//		
-//		this is not how it should work.
-//		container.innerHTML += "<button" +
-//		" id=\"addedButton" + addedButtonsNR + "\">" + buttonText + "</button>";
-//		for(i = 0;i<addedButtonsList.length;i++){
-//			
-//			
-//
-//			document.getElementById("addedButton" + i).addEventListener('click', AddedButtonClickEventSimulate);
-//			document.getElementById("addedButton" + i).addEventListener('mouseover', onMouseOverCustomButton); 
-//			document.getElementById("addedButton" + i).addEventListener('mouseout', onMouseOutCustomButton);
-//			
-//		}
-//		document.getElementById("extSidebarAddButton").addEventListener('click', AddThisButtonStart);
-		//document.getElementById("extSidebarRemoveElement").addEventListener('click', RemoveNextClickedElement);
-		//document.getElementById("extSidebarAddButton").disabled = false;
+
 		document.getElementById("extSidebarAddButton").innerHTML = "Click to add button";
 		addedButtonsNR++;
 		clickedOnce = false;
@@ -760,10 +824,12 @@ var AddThisButton = function(e){
 	console.log(e);
 };
 
-var KeyDownPress = function() {
+var KeyDownPress = function(e) {
+
 	console.log("keyPressed");
 	// add hotkeys for stuff here
 };
+
 
 // migth work. not tested
 var RemoveHTML = function(text){
@@ -874,6 +940,49 @@ var LoadLinks = function(){
 	
 };
 
+var LoadImages = function(){
+	chrome.storage.local.get("images", function(response){
+		console.log("images here?");
+		console.log(response.images);
+		savedImages = JSON.parse(response.images);
+		
+		container = $("#extSidebarImages");
+		container.empty();
+		
+
+		for(i= 0;i<savedImages.length;i++){
+			var img = document.createElement('img');
+			img.src = savedImages[i].src;
+			img.width = 50;
+			img.height = 50;
+			img.addEventListener('click', onClickImage);
+			container.append(img);
+		}
+		
+	});
+}
+
+var onClickImage =  function(e){
+//	first just delete it
+	if(e.altKey){
+		for(i = 0;i<savedImages.length;i++){
+			if(savedImages[i].src == e.toElement.src){
+//				found the image. delete it from storage and reload
+			
+			
+				savedImages.splice(i, 1);
+				var savedImagesJSON = JSON.stringify(savedImages);
+				chrome.storage.local.set({'images': savedImagesJSON}, function(){
+				
+				});
+				LoadImages();
+				
+			}
+			
+		}
+	}
+}
+
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -963,8 +1072,9 @@ var dispatchMouseEvent = function(target, var_args) {
 
 
 // Turn a image to base 64 so it is possible to store it in localstorage.
-function getBase64Image(img) {
+var getBase64Image = function(img) {
     // Create an empty canvas element
+	
     var canvas = document.createElement("canvas");
     canvas.width = img.width;
     canvas.height = img.height;
@@ -980,12 +1090,98 @@ function getBase64Image(img) {
 }
 
 // turn it into an imgage again
-function getImageFromBase64(dataImage){
+var getImageFromBase64 = function(dataImage){
 	return "data:image/png;base64," + dataImage;
 }
 
+var saveImageStart = function(e){
+	console.log("Clicked start save image button");
+	
+	
+	//e.srcElement.disabled = true;
+	document.addEventListener('click', saveImageEnd);
+	
+}
+
+var saveImageEnd = function(e){
+	console.log("clicked on something while toggle alt to save was toggled");
+	if(e.altKey && e.toElement.nodeName == "IMG"){
+		e.preventDefault();
+		saveImageToStorage(e.toElement);
+	}
+
+}
 
 
+// store imgage function
+// var is a html element
+var saveImageToStorage = function(element){
+	console.log("started save image");
+	if(element.nodeName == "IMG"){
+		
+		
+//		var img = document.createElement('img');
+//		img.setAttribute('crossorigin', 'anonymous');
+//		img.src = element.src;
+//		var image = getBase64Image(img);
+		
+//		might find another way of saving image other than just using the src
+		
+		var image = {
+				src: element.src,
+				title: "Title",
+				tags: ""
+		};
+		savedImages.push(image);
+		var savedImagesJSON = JSON.stringify(savedImages);
+		chrome.storage.local.set({'images': savedImagesJSON}, function(){
+			
+		});
+		LoadImages();
+	}
+} 
+
+var toggleAltToSaveClicked = 0;
+var ToggleAltToSave = function(e){
+	
+	
+	toggleAltToSaveClicked++;
+	console.log("toggle element");
+	console.log(e);
+	if(toggleAltToSaveClicked%2 == 1){
+		console.log("toggle alt to save is clicked");
+		e.toElement.innerHTML = "deToggle Save";
+		$('img').click(saveImageEnd);
+	}
+	else{
+		console.log("detoggle alt to save is clicked");
+		e.toElement.innerHTML = "Toggle Save";
+		$('img').unbind("click", saveImageEnd);
+	}
+}
+
+var HideDomHandler = function(e){
+	hideDivHandler("#extSidebarDomainLogContainer", "#extSidebarHideDomainButton");
+}
+var HideRecentHandler = function(e){
+	hideDivHandler("#extSidebarLogContainer", "#extSidebarHideRecentButton");
+}
+var HideNotesHandler = function(e){
+	hideDivHandler("#extSidebarNotesContainer", "#extSidebarHideNotesButton");
+}
+var HideImagesHandler = function(e){
+	hideDivHandler("#extSidebarImages", "#extSidebarHideImagesButton");
+}
+var hideDivHandler = function(div, btn){
+	if($(div).is(':visible')){
+		$(btn).html("Show");
+		$(div).hide();
+	}
+	else{
+		$(btn).html("Hide");
+		$(div).show();
+	}
+}
 
 
 
