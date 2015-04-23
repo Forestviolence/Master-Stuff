@@ -35,6 +35,9 @@ var logToShow = [];
 
 var savedImages = [];
 
+
+var sidebarFadems = 500;
+
 window.onload = function(e){
 	
 	var domain = "log" + document.domain;
@@ -114,7 +117,7 @@ window.onload = function(e){
 
 var Style = function(element){
 	if(element.nodeName == "A"){
-		element.setAttribute('style', "background: #ddd; border-style: outset; border-width: 5px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 5px 5px; margin: 10px 5px; overflow-x:hidden;");
+		element.setAttribute('style', "background: #f1f1f1; font-size: 9px; border-style: outset; border-width: 3px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 3px 3px; margin: 10px 5px; overflow-x:hidden; overflow-y:hidden;");
 		$(element).mouseenter(onMouseOverButton);
 		$(element).mouseleave(onMouseOutButton);
 		$(element).mousedown(onMouseDownButton);
@@ -123,13 +126,13 @@ var Style = function(element){
 //		element.addEventListener('mousedown', onMouseDownButton);
 	}
 	else if(element.nodeName == "H1"){
-		element.setAttribute('style', "color: black; text-align: center; font-size: 20px; font-family: \"Arial\"; font-weight: normal; padding: 10px 10px; margin: 15px 10px;");
+		element.setAttribute('style', "color: black; text-align: center; font-size: 20px; font-family: \"Arial\"; font-weight: normal; padding: 5px 5px; margin: 1px 2px;");
 	}
 	else if(element.nodeName == "H2"){
-		element.setAttribute('style', "color: black; text-align: center; font-size: 30px; font-family: \"Arial\"; font-weight: normal; padding: 10px 10px; margin: 15px 10px;");
+		element.setAttribute('style', "color: black; text-align: center; font-size: 30px; font-family: \"Arial\"; font-weight: normal; padding: 5px 5px; margin: 15px 10px;");
 	}
 	else if(element.nodeName == "BUTTON"){
-		element.setAttribute('style', "background: #ddd; border-style: outset; border-width: 5px; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 5px 5px; margin: 10px 5px; overflow-x:hidden;");
+		element.setAttribute('style', "background: #f1f1f1; font-size: 9px; border-style: outset; border-width: 3px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 3px 3px; margin: 10px 5px; overflow-x:hidden; overflow-y:hidden;");
 		$(element).mouseenter(onMouseOverButton);
 		$(element).mouseleave(onMouseOutButton);
 		$(element).mousedown(onMouseDownButton);
@@ -138,11 +141,11 @@ var Style = function(element){
 //		element.addEventListener('mousedown', onMouseDownButton);
 	}
 	else if (element.nodeName == "DIV"){
-		element.setAttribute('style', "margin: 10 20px; overflow-y:auto;");
+		element.setAttribute('style', "margin: 1 2px;");
 		//custom stuff for divs
 	}
 	else if (element.nodeName == "TEXTAREA"){
-		element.setAttribute('style', "width: 90%; heigth: 15%; overflow-y:auto;");
+		element.setAttribute('style', "width: 90%; heigth: 15%; overflow-y:auto; padding: 1px 10px 1px 1px;");
 		element.setAttribute('rows', "6;");
 		
 		
@@ -173,17 +176,37 @@ if (document.body) {
     rightclicked_item = null;
   });
 }
+var getStylesheet = function(){
+	
 
+	
+	for(var i = 0 ; i < document.styleSheets.length; i++){
+		console.log(document.styleSheets[i]);
+			
+		
+	}
+}
+var getStyle = function(className){
+//	document.getElement
+	
+}
 
 var sidebarOpen = false;
 var sidebarHidden = false;
 function toggleSidebar() {
 	if(sidebarOpen && !sidebarHidden) {
-		var el = document.getElementById('extSidebar');
-		el.style.visibility="hidden";
-		//el.parentNode.removeChild(el);
-		//document.removeEventListener('keypress', KeyDownPress);
-		sidebarHidden = true;
+		$('#extSidebar').fadeTo( sidebarFadems , 0, function() {
+			var el = document.getElementById('extSidebar');
+			el.style.visibility="hidden";
+			//el.parentNode.removeChild(el);
+			//document.removeEventListener('keypress', KeyDownPress);
+			sidebarHidden = true;
+		});
+//		var el = document.getElementById('extSidebar');
+//		el.style.visibility="hidden";
+//		//el.parentNode.removeChild(el);
+//		//document.removeEventListener('keypress', KeyDownPress);
+//		sidebarHidden = true;
 	}
 	else if (!sidebarOpen) {
 		
@@ -214,11 +237,28 @@ function toggleSidebar() {
 			overflow-y:auto;\
 		";
 		
+//		sidebar.style.backgroundColor = document.body.style.backgroundColor;
+//		console.log(document.body.style.backgroundColor );
+		
+		
+		var cssadd = document.createElement('link');
+		cssadd.setAttribute("id", "extSidebarCSSheet");
+		cssadd.setAttribute("type", "text/css");
+		cssadd.setAttribute("rel", "stylesheet");
+		cssadd.setAttribute("href", chrome.extension.getURL("extSidebarCSS.css"));
+		document.getElementsByTagName("head")[0].appendChild(cssadd);
+		
+		getStylesheet();
+		
 		var scriptadd = document.createElement('script');
 		scriptadd.setAttribute("type", "text/javascript;");
 		scriptadd.setAttribute("src", "jquery-2.1.3.min.js");
-		sidebar.appendChild(scriptadd);
+//		sidebar.appendChild(scriptadd);
 		
+//		sidebar.style.cssText = 
+		
+		sidebar.style.opacity = 0.0;
+		$(sidebar).fadeTo( sidebarFadems , 1, function() {});
 		
 //		fetch images list
 		
@@ -440,9 +480,14 @@ function toggleSidebar() {
 //		var thisthing = document.evaluate('//html/head/title', document.href = "www.9gag.com", null, XPathResult.ANY_TYPE, null);
 //		var thisthing = XPathOnURL("http://wwww.9gag.com", "//html/head/title");
 //		console.log(thisthing.iterateNext().innerHTML);
+		
+		
+//		for(var i = 0;i < sidebar.childNodes.length;i++){
+//			sidebar.childNodes[i].style.opacity = 1.2;
+//		}
 	}
 	else if (sidebarHidden && sidebarOpen){
-		
+		$('#extSidebar').fadeTo( sidebarFadems , 1, function() {});
 		document.getElementById('extSidebar').style.visibility="visible";
 		sidebarHidden = false;
 		
@@ -522,11 +567,11 @@ var AddLinksToContainer = function(list, container){
 		Style(link);
 		var br = document.createElement('br');
 		var brr = document.createElement('br');
-		var brrr = document.createElement('br');
+//		var brrr = document.createElement('br');
 		container.appendChild(link);
 		container.appendChild(br);
 		container.appendChild(brr);
-		container.appendChild(brrr);
+//		container.appendChild(brrr);
 	}
 }
 var StoreButtons = function(){

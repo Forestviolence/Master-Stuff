@@ -13,9 +13,13 @@
   },
   "content_scripts": [{
         "matches": ["<all_urls>"],
+		"css":     ["extSidebarCSS.css"],
         "js":      ["docScript.js", "jquery-2.1.3.min.js"]
     }
 	],
+  "web_accessible_resources": [
+        "extSidebarCSS.css"
+    ],
 	
 	
 

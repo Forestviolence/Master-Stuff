@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="Previous versions/V1.1/|Previous versions/V1.0/|Previous versions/V1.2/|Previous versions/V1.4/" kind="src" path=""/>
+	<classpathentry kind="src" path="Previous versions/V1.0"/>
+	<classpathentry kind="src" path="Previous versions/V1.1"/>
+	<classpathentry kind="src" path="Previous versions/V1.2"/>
+	<classpathentry kind="src" path="Previous versions/V1.4"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
