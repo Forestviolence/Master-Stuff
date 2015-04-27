@@ -38,6 +38,16 @@ var savedImages = [];
 
 var sidebarFadems = 500;
 
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+	var cssadd = document.createElement('link');
+	cssadd.setAttribute("id", "extSidebarCSSheet");
+	cssadd.setAttribute("type", "text/css");
+	cssadd.setAttribute("rel", "stylesheet");
+	cssadd.setAttribute("href", chrome.extension.getURL("extSidebarCSS.css"));
+	document.getElementsByTagName("head")[0].appendChild(cssadd);
+});
+
 window.onload = function(e){
 	
 	var domain = "log" + document.domain;
@@ -117,25 +127,25 @@ window.onload = function(e){
 
 var Style = function(element){
 	if(element.nodeName == "A"){
-		element.setAttribute('style', "background: #f1f1f1; font-size: 9px; border-style: outset; border-width: 3px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 3px 3px; margin: 10px 5px; overflow-x:hidden; overflow-y:hidden;");
-		$(element).mouseenter(onMouseOverButton);
-		$(element).mouseleave(onMouseOutButton);
-		$(element).mousedown(onMouseDownButton);
+//		element.setAttribute('style', "background: #f1f1f1; font-size: 9px; border-style: outset; border-width: 3px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 3px 3px; margin: 10px 5px; overflow-x:hidden; overflow-y:hidden;");
+//		$(element).mouseenter(onMouseOverButton);
+//		$(element).mouseleave(onMouseOutButton);
+//		$(element).mousedown(onMouseDownButton);
 //		element.addEventListener('mouseover', onMouseOverButton); 
 //		element.addEventListener('mouseout', onMouseOutButton);
 //		element.addEventListener('mousedown', onMouseDownButton);
 	}
 	else if(element.nodeName == "H1"){
-		element.setAttribute('style', "color: black; text-align: center; font-size: 20px; font-family: \"Arial\"; font-weight: normal; padding: 5px 5px; margin: 1px 2px;");
+//		element.setAttribute('style', "color: black; text-align: center; font-size: 20px; font-family: \"Arial\"; font-weight: normal; padding: 5px 5px; margin: 1px 2px;");
 	}
 	else if(element.nodeName == "H2"){
-		element.setAttribute('style', "color: black; text-align: center; font-size: 30px; font-family: \"Arial\"; font-weight: normal; padding: 5px 5px; margin: 15px 10px;");
+//		element.setAttribute('style', "color: black; text-align: center; font-size: 30px; font-family: \"Arial\"; font-weight: normal; padding: 5px 5px; margin: 15px 10px;");
 	}
 	else if(element.nodeName == "BUTTON"){
-		element.setAttribute('style', "background: #f1f1f1; font-size: 9px; border-style: outset; border-width: 3px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 3px 3px; margin: 10px 5px; overflow-x:hidden; overflow-y:hidden;");
-		$(element).mouseenter(onMouseOverButton);
-		$(element).mouseleave(onMouseOutButton);
-		$(element).mousedown(onMouseDownButton);
+//		element.setAttribute('style', "background: #f1f1f1; font-size: 9px; border-style: outset; border-width: 3px; font-variant: normal; border-color: #f1f1f1; color: #111111; font-family: \"Arial\"; padding: 3px 3px; margin: 10px 5px; overflow-x:hidden; overflow-y:hidden;");
+//		$(element).mouseenter(onMouseOverButton);
+//		$(element).mouseleave(onMouseOutButton);
+//		$(element).mousedown(onMouseDownButton);
 //		element.addEventListener('mouseover', onMouseOverButton); 
 //		element.addEventListener('mouseout', onMouseOutButton);
 //		element.addEventListener('mousedown', onMouseDownButton);
@@ -145,7 +155,7 @@ var Style = function(element){
 		//custom stuff for divs
 	}
 	else if (element.nodeName == "TEXTAREA"){
-		element.setAttribute('style', "width: 90%; heigth: 15%; overflow-y:auto; padding: 1px 10px 1px 1px;");
+//		element.setAttribute('style', "width: 90%; heigth: 15%; overflow-y:auto; padding: 1px 10px 1px 1px;");
 		element.setAttribute('rows', "6;");
 		
 		
@@ -241,18 +251,18 @@ function toggleSidebar() {
 //		console.log(document.body.style.backgroundColor );
 		
 		
-		var cssadd = document.createElement('link');
-		cssadd.setAttribute("id", "extSidebarCSSheet");
-		cssadd.setAttribute("type", "text/css");
-		cssadd.setAttribute("rel", "stylesheet");
-		cssadd.setAttribute("href", chrome.extension.getURL("extSidebarCSS.css"));
-		document.getElementsByTagName("head")[0].appendChild(cssadd);
+//		var cssadd = document.createElement('link');
+//		cssadd.setAttribute("id", "extSidebarCSSheet");
+//		cssadd.setAttribute("type", "text/css");
+//		cssadd.setAttribute("rel", "stylesheet");
+//		cssadd.setAttribute("href", chrome.extension.getURL("extSidebarCSS.css"));
+//		document.getElementsByTagName("head")[0].appendChild(cssadd);
 		
-		getStylesheet();
-		
-		var scriptadd = document.createElement('script');
-		scriptadd.setAttribute("type", "text/javascript;");
-		scriptadd.setAttribute("src", "jquery-2.1.3.min.js");
+//		getStylesheet();
+//		
+//		var scriptadd = document.createElement('script');
+//		scriptadd.setAttribute("type", "text/javascript;");
+//		scriptadd.setAttribute("src", "jquery-2.1.3.min.js");
 //		sidebar.appendChild(scriptadd);
 		
 //		sidebar.style.cssText = 
@@ -270,7 +280,7 @@ function toggleSidebar() {
 		
 		var header = document.createElement('h1');
 		header.innerHTML = "Header";
-		Style(header);
+		header.id = "extHeader";
 		sidebar.appendChild(header);
 		
 		var logoutbutton = document.createElement('button');
@@ -313,7 +323,7 @@ function toggleSidebar() {
 		//DOMAINLOG
 		var domcontheader = document.createElement('h1');
 		domcontheader.innerHTML = "Domain Log";
-		Style(domcontheader);
+		domcontheader.id = "extDomContHeader";
 		sidebar.appendChild(domcontheader);
 		
 		var hidedomlogbtn = document.createElement('button')
@@ -334,7 +344,7 @@ function toggleSidebar() {
 		
 		var logheader = document.createElement('h1');
 		logheader.innerHTML = "Recent Log";
-		Style(logheader);
+		logheader.id = "extLogHeader";
 		sidebar.appendChild(logheader);
 		
 		var hidelogbtn = document.createElement('button')
@@ -354,7 +364,7 @@ function toggleSidebar() {
 		
 		var notesheader = document.createElement('h1');
 		notesheader.innerHTML = "Notes";
-		Style(notesheader);
+		notesheader.id = "extNotesHeader";
 		sidebar.appendChild(notesheader);
 		
 		var hidenotesbtn = document.createElement('button')
@@ -380,7 +390,6 @@ function toggleSidebar() {
 		var imageheader = document.createElement('h1');
 		imageheader.id = "extSidebarImageHeader";
 		imageheader.innerHTML = "Images";
-		Style(imageheader);
 		sidebar.appendChild(imageheader);
 		
 //		var imagecont = document.createElement('div');
@@ -391,14 +400,12 @@ function toggleSidebar() {
 		var togglesaveimagebtn = document.createElement('button')
 		togglesaveimagebtn.id = "extSidebarToggleSaveImageButton";
 		togglesaveimagebtn.innerHTML = "Toggle Save";
-		Style(togglesaveimagebtn);
 		imageheader.appendChild(togglesaveimagebtn);
 		$(togglesaveimagebtn).click(ToggleAltToSave);
 		
 		var hideimagesbtn = document.createElement('button')
 		hideimagesbtn.id = "extSidebarHideImagesButton";
 		hideimagesbtn.innerHTML = "Hide";
-		Style(hideimagesbtn);
 		imageheader.appendChild(hideimagesbtn);
 		$(hideimagesbtn).click(HideImagesHandler);
 		
@@ -510,39 +517,12 @@ var AddButtonsToContainer = function(list, container){
 			Style(image);
 			image.addEventListener('click', onClickCustomButton);
 			button.appendChild(image);
-			//console.log("was here");
 			
 		}
 		button.setAttribute('extxpath', list[i].path);
-		Style(button);
+		button.id = "extButton";
 		button.addEventListener('click', onClickCustomButton);
 		container.appendChild(button);
-//		var button = document.createElement('button');
-//		button.setAttribute('extxpath', list[i].path);
-//		button.innerHTML = list[i].title;
-		
-//		if(list[i].title == "" || list[i].title == " "){
-//			var path = list[i].path;
-//			
-//			var targetButton = document.evaluate(path, document, null, XPathResult.ANY_TYPE, null).iterateNext();
-//			if(targetButton.nodeName == "IMG"){
-//				var imageOnButton = document.createElement('img');
-//				imageOnButton.src = targetButton.src;
-//				
-//				button.appendChild(imageOnButton);
-//			}
-//		}
-		
-//		console.log(list[i].title.lenght);
-//		Style(button);
-//		button.addEventListener('click', onClickCustomButton);
-//		var br = document.createElement('br');
-//		var brr = document.createElement('br');
-//		var brrr = document.createElement('br');
-//		container.appendChild(button);
-//		container.appendChild(br);
-//		container.appendChild(brr);
-//		container.appendChild(brrr);
 	}
 };
 var AddLinksToContainer = function(list, container){
@@ -565,6 +545,7 @@ var AddLinksToContainer = function(list, container){
 		link.href = list[i].href;
 		link.innerHTML = list[i].title;
 		Style(link);
+		link.id = "extLink";
 		var br = document.createElement('br');
 		var brr = document.createElement('br');
 //		var brrr = document.createElement('br');

@@ -46,7 +46,18 @@ function headerChange(type){
 	}
 	
 }
-
+function saveSettings(){
+	console.log("in save settings");
+	for(var i = 0 ; i < document.styleSheets.length; i++){
+		console.log(document.styleSheets[i]);
+		
+		var sheet = document.styleSheets[i];
+		
+		sheet.addRule("#myList li", "float: left; background: red !important;", 1);
+			
+		console.log(sheet);
+	}
+}
 
 
 

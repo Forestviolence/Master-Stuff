@@ -16,7 +16,34 @@ a[id^="ext"] {
 	font-family: \"Arial\"; 
 	padding: 3px 3px; margin: 10px 5px; 
 	overflow-x:hidden;
+	overflow-y:hidden;
 }
+
+a[id^="ext"]:active {
+	background: #f1f1f1; 
+	font-size: 9px; 
+	border-style: outset; 
+	border-width: 3px; 
+	border-color: #f1f1f1; 
+	color: #f1f1f1; 
+	font-family: \"Arial\"; 
+	padding: 3px 3px; margin: 10px 5px; 
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+a[id^="ext"]:hover {
+	background: #f1f1f1; 
+	font-size: 9px; 
+	border-style: inset; 
+	border-width: 3px; 
+	border-color: #f1f1f1; 
+	color: #111111; 
+	font-family: \"Arial\"; 
+	padding: 3px 3px; margin: 10px 5px; 
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+	
 button[id^="ext"] {
 	background: #f1f1f1; 
 	font-size: 9px; 
@@ -27,6 +54,37 @@ button[id^="ext"] {
 	font-family: \"Arial\"; 
 	padding: 3px 3px; margin: 10px 5px; 
 	overflow-x:hidden;
+	overflow-y:hidden;
+}
+button[id^="ext"]:active {
+	background: #f1f1f1; 
+	font-size: 9px; 
+	border-style: outset; 
+	border-width: 3px; 
+	border-color: #f1f1f1; 
+	color: #f1f1f1; 
+	font-family: \"Arial\"; 
+	padding: 3px 3px; margin: 10px 5px; 
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+button[id^="ext"]:hover {
+	background: #f1f1f1; 
+	font-size: 9px; 
+	border-style: inset; 
+	border-width: 3px; 
+	border-color: #f1f1f1; 
+	color: #111111; 
+	font-family: \"Arial\"; 
+	padding: 3px 3px; margin: 10px 5px; 
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+textarea[id^="ext"] {
+	width: 90%;
+	heigth: 15%;
+	overflow-y:auto;
+	padding: 1px 10px 1px 1px;
 }
 table[id^="ext"] {
 	width:100%;
