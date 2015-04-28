@@ -1,3 +1,6 @@
+
+
+
 function colorChange(id){
 	var previewId = "extpreviewButton"
 	
@@ -17,10 +20,56 @@ function colorChange(id){
 
 function borderChange(){
 	
-	var previewId = "previewButtonBorder";
+	var previewId = "extpreviewButtonBorder";
 	console.log("got a border change");
 	
 	$("#" + previewId).css('border-style', $("#borderChange").val());
+	if($("#borderChange").val() == "outset"){
+		$("#" + previewId).css('border-style:hover', "inset");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	if($("#borderChange").val() == "inset"){
+		$("#" + previewId).css('border-style:hover', "outset");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	if($("#borderChange").val() == "dotted"){
+		$("#" + previewId).css('border-style:hover', "dashed");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	if($("#borderChange").val() == "dashed"){
+		$("#" + previewId).css('border-style:hover', "dotted");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	if($("#borderChange").val() == "solid"){
+		$("#" + previewId).css('border-style:hover', "double");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	if($("#borderChange").val() == "groove"){
+		$("#" + previewId).css('border-style:hover', "ridge");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	if($("#borderChange").val() == "ridge"){
+		$("#" + previewId).css('border-style:hover', "groove");
+		$("#" + previewId).css('border-style:active', $("#borderChange").val() );
+		$("#" + previewId).css('color:active', $("#colorPicker").val());
+	}
+	// needs fixing...
+	
+}
+function borderColorChange(){
+	
+	var previewId = "extpreviewButtonBorder";
+//	border-color: #f1f1f1; 
+	$("#" + previewId).css('border-color', $("#bgPicker").val());
+	
+	
+	
 	
 	
 }
@@ -48,11 +97,15 @@ function headerChange(type){
 }
 function saveSettings(){
 	console.log("in save settings");
+	console.log(window.document);
+	console.log(window.document.styleSheets);
+	console.log(document);
+	console.log(document.styleSheets);
 	for(var i = 0 ; i < document.styleSheets.length; i++){
-		console.log(document.styleSheets[i]);
 		
-		var sheet = document.styleSheets[i];
 		
+		var sheet = window.document.styleSheets[i];
+		console.log(sheet.cssRules);
 		sheet.addRule("#myList li", "float: left; background: red !important;", 1);
 			
 		console.log(sheet);
