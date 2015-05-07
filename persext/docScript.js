@@ -48,7 +48,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	document.getElementsByTagName("head")[0].appendChild(cssadd);
 });
 
+
+
+
+
 window.onload = function(e){
+
 	
 	var domain = "log" + document.domain;
 	var url = document.URL;
@@ -186,20 +191,21 @@ if (document.body) {
     rightclicked_item = null;
   });
 }
-var getStylesheet = function(){
-	
 
-	
-	for(var i = 0 ; i < document.styleSheets.length; i++){
-		console.log(document.styleSheets[i]);
-			
+
+var setCSS = function(){
+	chrome.runtime.sendMessage({method: "GETCSS"}, function(response){
 		
-	}
+		// Load buttons
+		console.log(response);
+		if(response){
+			
+			$("head").append(response.data);
+
+		}
+	});
 }
-var getStyle = function(className){
-//	document.getElement
-	
-}
+
 
 var sidebarOpen = false;
 var sidebarHidden = false;
@@ -231,7 +237,7 @@ function toggleSidebar() {
 		}
 		
 		console.log("Building");
-		
+		setCSS();
 		
 		var sidebar = document.createElement('div');
 		sidebar.id = "extSidebar";

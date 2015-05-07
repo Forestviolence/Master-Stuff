@@ -1,34 +1,43 @@
 {
-  "manifest_version": 2,
+	"manifest_version": 2,
 
-  "name": "Sidebar",
-  "description": "Testing extension possibilites",
-  "version": "1.0",
-  "background": {
-	"page": "extWindow.html"
-  },
-  "page_action": {
-	"default_icon": "icon.png",
-	"default_title": "Testing Sidebar"
-  },
-  "content_scripts": [{
+	"name": "Sidebar",
+	"description": "Testing extension possibilites",
+	"version": "1.0",
+	"background": {
+		"page": "extWindow.html"
+	},
+	"page_action": {
+		"default_icon": "icon.png",
+		"default_title": "Testing Sidebar"
+	},
+	"content_scripts": [{
         "matches": ["<all_urls>"],
 		"css":     ["extSidebarCSS.css"],
-        "js":      ["docScript.js", "jquery-2.1.3.min.js"]
+        "js":      ["docScript.js", "jquery-2.1.3.min.js", "extSettings.js"]
     }
 	],
-  "web_accessible_resources": [
+	"web_accessible_resources": [
         "extSidebarCSS.css",
-		"extSidebar.html"
+		"extSidebar.html",
+		"ExtSettings.html"
     ],
 	
-	
-
-  "permissions": [
-	 "http://*/*", "https://*/*", "contextMenus", "tabs", "idle", "webRequest", "webRequestBlocking", "webNavigation", "activeTab", "storage", "unlimitedStorage"
-
-  ],
-   "icons": {
-    "lgotbtn": "img/logoutbtn.png"
-  }
+	"options_page": "ExtSettings.html",
+	"content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+	"permissions": [
+		"http://*/*", 
+		"https://*/*", 
+		"contextMenus", 
+		"tabs", "idle",
+		"webRequest",
+		"webRequestBlocking",
+		"webNavigation",
+		"activeTab",
+		"storage",
+		"unlimitedStorage"
+	],
+	"icons": {
+		"lgotbtn": "img/logoutbtn.png"
+	}
 }
