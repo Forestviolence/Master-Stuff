@@ -241,17 +241,17 @@ function toggleSidebar() {
 		
 		var sidebar = document.createElement('div');
 		sidebar.id = "extSidebar";
-		sidebar.style.cssText = "\
-			position:fixed;\
-			top:0px;\
-			left:0px;\
-			width:20%;\
-			height:100%;\
-			background:white;\
-			box-shadow:inset 0 0 1em black;\
-			z-index:99999999999999;\
-			overflow-y:auto;\
-		";
+//		sidebar.style.cssText = "\
+//			position:fixed;\
+//			top:0px;\
+//			left:0px;\
+//			width:20%;\
+//			height:100%;\
+//			background:white;\
+//			box-shadow:inset 0 0 1em black;\
+//			z-index:99999999999999;\
+//			overflow-y:auto;\
+//		";
 		
 //		sidebar.style.backgroundColor = document.body.style.backgroundColor;
 //		console.log(document.body.style.backgroundColor );

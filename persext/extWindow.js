@@ -95,6 +95,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		    }
 		    if(request.method == "SAVECSS"){
 		    	localStorage["CSS"] = request.value;
+		    	sendResponse({message: "CSS saved"});
 		    	
 		    }
 		    if(request.method == "GETCSS") {
@@ -121,7 +122,9 @@ function CallSomething(e){
 	});
 }
 
-var defaultcsstext = '<style type="text/css">' +
+
+// this is where the default css is.
+var defaultcsstext = '<style type="text/css" id="extCSS">' +
 'h1[id^="ext"] {' + 
 	'color: black;' + 
 	'text-align: center;' + 
@@ -137,20 +140,20 @@ var defaultcsstext = '<style type="text/css">' +
 	'color: #111111; '+
 	'font-family: \"Arial\"; '+
 	'padding: 3px 3px; margin: 10px 5px; '+
-	'overflow-x:hidden;'+
-	'overflow-y:hidden;'+
+	'overflow-x: hidden;'+
+	'overflow-y: hidden;'+
 '}'+
 'a[id^="ext"]:active {'+
 	'background: #f1f1f1; '+
 	'font-size: 9px; '+
-	'border-style: outset; '+
+	'border-style: inset; '+
 	'border-width: 3px; '+
 	'border-color: #f1f1f1; '+
 	'color: #f1f1f1; '+
 	'font-family: \"Arial\"; '+
 	'padding: 3px 3px; margin: 10px 5px; '+
-	'overflow-x:hidden;'+
-	'overflow-y:hidden;'+
+	'overflow-x: hidden;'+
+	'overflow-y: hidden;'+
 '}'+
 'a[id^="ext"]:hover {'+
 	'background: #f1f1f1; '+
@@ -161,8 +164,8 @@ var defaultcsstext = '<style type="text/css">' +
 	'color: #111111; '+
 	'font-family: \"Arial\"; '+
 	'padding: 3px 3px; margin: 10px 5px; '+
-	'overflow-x:hidden;'+
-	'overflow-y:hidden;'+
+	'overflow-x: hidden;'+
+	'overflow-y: hidden;'+
 '}'+
 'button[id^="ext"] {'+
 	'background: #f1f1f1; '+
@@ -173,20 +176,20 @@ var defaultcsstext = '<style type="text/css">' +
 	'color: #111111; '+
 	'font-family: \"Arial\"; '+
 	'padding: 3px 3px; margin: 10px 5px; '+
-	'overflow-x:hidden;'+
-	'overflow-y:hidden;'+
+	'overflow-x: hidden;'+
+	'overflow-y: hidden;'+
 '}'+
 'button[id^="ext"]:active {'+
 	'background: #f1f1f1; '+
 	'font-size: 9px; '+
-	'border-style: outset; '+
+	'border-style: inset; '+
 	'border-width: 3px; '+
 	'border-color: #f1f1f1; '+
 	'color: #f1f1f1; '+
 	'font-family: \"Arial\"; '+
 	'padding: 3px 3px; margin: 10px 5px; '+
-	'overflow-x:hidden;'+
-	'overflow-y:hidden;'+
+	'overflow-x: hidden;'+
+	'overflow-y: hidden;'+
 '}'+
 'button[id^="ext"]:hover {'+
 	'background: #f1f1f1; '+
@@ -197,8 +200,8 @@ var defaultcsstext = '<style type="text/css">' +
 	'color: #111111; '+
 	'font-family: \"Arial\"; '+
 	'padding: 3px 3px; margin: 10px 5px; '+
-	'overflow-x:hidden;'+
-	'overflow-y:hidden;'+
+	'overflow-x: hidden;'+
+	'overflow-y: hidden;'+
 '}'+
 'textarea[id^="ext"] {'+
 	'width: 90%;'+
@@ -207,34 +210,34 @@ var defaultcsstext = '<style type="text/css">' +
 	'padding: 1px 10px 1px 1px;'+
 '}'+
 'table[id^="ext"] {'+
-	'width:100%;'+
-	'height:90%;'+
-	'position:absolute;'+
+	'width: 100%;'+
+	'height: 90%;'+
+	'position: absolute;'+
 '}'+
 'tr[id^="ext"] {'+
-	'heigth:30%;'+
-	'width:100%;'+
-	'overflow:hidden;'+
+	'heigth: 30%;'+
+	'width: 100%;'+
+	'overflow: hidden;'+
 '}'+
 'td[id^="ext"] {'+
-	'display:block;'+
-	'padding:0px 1px;'+
-	'min-height:30%;'+
-	'max-height:30%;'+
-	'height:30%;'+
-	'width:33%;'+
-	'border:1px solid;'+
-	'overflow:hidden;'+
+	'display: block;'+
+	'padding: 0px 1px;'+
+	'min-height: 30%;'+
+	'max-height: 30%;'+
+	'height: 30%;'+
+	'width: 33%;'+
+	'border: 1px solid;'+
+	'overflow: hidden;'+
 '}'+
-'.extSidebar {'+
-	'position:fixed;'+
-	'top:0px;'+
-	'left:0px;'+
-	'width:20%;'+
-	'height:100%;'+
-	'background:black;'+
-	'box-shadow:inset 0 0 1em black;'+
-	'z-index:99999999999999;'+
-	'overflow-y:auto;'+
+'#extSidebar {'+
+	'position: fixed;'+
+	'top: 0px;'+
+	'left: 0px;'+
+	'width: 20%;'+
+	'height: 100%;'+
+	'background: white;'+
+	'box-shadow: inset 0 0 1em black;'+
+	'z-index: 99999999999999;'+
+	'overflow-y: auto;'+
 '}' +
 '</style>';
